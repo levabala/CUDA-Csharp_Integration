@@ -127,6 +127,7 @@ int GPU_Summator(double* a, double* b, double* c, int length, int type){
 				bestC = i;
 			}
 		}
+		count = bestC;
 		return bestC;
 	}
 	return 99999;
