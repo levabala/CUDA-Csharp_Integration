@@ -30,8 +30,8 @@ namespace C_CUDA_Integration
             radioButton1.Tag = CalcType.CSharp;
             radioButton2.Tag = CalcType.C;
             radioButton3.Tag = CalcType.CUDA;
-            
-            Calculations(CalcType.CUDA); //UpLoad the DLL
+
+            Calculations(CalcType.CUDA, false); //UpLoad the DLL
 
             CalcTypeList = new CalcType[3];
             CalcTypeList[0] = CalcType.CUDA;
@@ -96,7 +96,7 @@ namespace C_CUDA_Integration
                         unsafe
                         {
                             fixed (double* aL = A, bL = B, cL = C1)
-                                OutputValue.Text = Main(aL, bL, cL, length, 3).ToString();
+                                OutputValue.Text = Main(aL, bL, cL, length, 2).ToString();
                         }
                         break;
                     case CalcType.C:
@@ -194,7 +194,7 @@ namespace C_CUDA_Integration
             return inaccuracy;
         }
 
-        private double Calculations(CalcType type)
+        private double Calculations(CalcType type, Boolean test)
         {
             int length = Int32.Parse(ArrayLength.Text);
             Random rn = new Random();
@@ -216,7 +216,7 @@ namespace C_CUDA_Integration
                     {
                         dt1 = DateTime.Now;
                         fixed (double* aL = A, bL = B, cL = C)
-                            OutputValue.Text = Main(aL, bL, cL, length, 3).ToString();
+                            OutputValue.Text = Main(aL, bL, cL, length, (test == true) ? 3 : 2).ToString();
                         dt2 = DateTime.Now;
                         spendTime = (dt2 - dt1).TotalMilliseconds;
                         return spendTime;
@@ -256,13 +256,13 @@ namespace C_CUDA_Integration
                     switch ((CalcType)rb.Tag)
                     {
                         case CalcType.CUDA:
-                            SpendingTime.Text = Calculations((CalcType)rb.Tag).ToString();
+                            SpendingTime.Text = Calculations((CalcType)rb.Tag,true).ToString();
                             break;
                         case CalcType.C:
-                            SpendingTime.Text = Calculations((CalcType)rb.Tag).ToString();
+                            SpendingTime.Text = Calculations((CalcType)rb.Tag, false).ToString();
                             break;
                         case CalcType.CSharp:
-                            SpendingTime.Text = Calculations((CalcType)rb.Tag).ToString();
+                            SpendingTime.Text = Calculations((CalcType)rb.Tag, false).ToString();
                             break;
                     }
                 }
@@ -295,9 +295,9 @@ namespace C_CUDA_Integration
 
             for (int i = 0; i < Int32.Parse(CalcCount.Text); i++)
             {
-                C.Items.Add(Calculations(CalcType.C).ToString());                
-                CSharp.Items.Add(Calculations(CalcType.CSharp).ToString());
-                CUDA.Items.Add(Calculations(CalcType.CUDA).ToString());
+                C.Items.Add(Calculations(CalcType.C, false).ToString());
+                CSharp.Items.Add(Calculations(CalcType.CSharp, false).ToString());
+                CUDA.Items.Add(Calculations(CalcType.CUDA, false).ToString());
             }
             for (int ii = 0; ii < C.Items.Count; ii++)
             {
